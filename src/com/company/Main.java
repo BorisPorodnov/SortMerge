@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         List<String> files = Arrays.stream(args).filter(it -> it.charAt(0) != '-')
             .collect(Collectors.toList());
