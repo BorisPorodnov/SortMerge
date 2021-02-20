@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class Main {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         List<String> files = Arrays.stream(args).filter(it -> it.charAt(0) != '-')
             .collect(Collectors.toList());
@@ -30,47 +30,74 @@ public class Main {
         String flagInt = flags.get(1);
 
         switch (flagInt) {
-            case "-i":
 
-                int[] readText = new int[0];
+            case "-i":
+                int[] text = readFile(inputFiles);
+                int[] resultText = sort(text);
+
                 try {
-                    readText = read(inputFiles);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                int[] sortMasRes = sort(readText);
-                try {
-                    write(sortMasRes);
+                    assert resultText != null;
+                    write(resultText);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
                 break;
+            case "-s":
+
             default:
                 System.out.println(" this name was not found ");
                 break;
         }
+
     }
+    private static int[] readFile(List<String> inputFiles) {
 
-    private static int[] read(List<String> inputFiles) throws IOException {
-
+        boolean numeric;
         List<Integer> list = new ArrayList<>();
 
         for (String inputFile : inputFiles) {
-            List<String> lines = Files.readAllLines(Paths.get(inputFile));
-
-            for (String elem : lines) {
-                list.add(Integer.valueOf(elem));
+            List<String> lines = null;
+            try {
+                lines = Files.readAllLines(Paths.get(inputFile));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for (int i = 0; i < lines.size(); i++) {
+                String str = lines.get(i);
+                numeric = tryParse(str);
+                if (numeric) {
+                    list.add(Integer.parseInt(str));
+                } else {
+                    System.out.println("Ошибка смотри после строки " + i + " " + "Файл содержит элемент: " + str);
+                    System.out.println("После исправления запустите приложение повторно");
+                }
             }
         }
-        int[] result = new int[list.size()];
+        int[] res = new int[list.size()];
         for (int i = 0; i < list.size(); i++) {
-            result[i] = list.get(i);
+            res[i] = list.get(i);
         }
-        return sort(result);
+        return res;
     }
 
-    public static void write(int[] sortMas) throws FileNotFoundException {
+    private static boolean tryParse(String element) {
+
+        if (element == null || element.length() == 0) {
+            return false;
+        }
+        try {
+            Integer.parseInt(element);
+            return true;
+
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private static void write(int[] sortMas) throws FileNotFoundException {
+
         PrintWriter out = new PrintWriter("outFile.txt");
+
         StringBuilder builder = new StringBuilder();
 
         for (int i = 0; i < sortMas.length; i++) {
@@ -92,7 +119,6 @@ public class Main {
         if (mass.length < 2) {
             return mass;
         }
-
         int[] leftMass = new int[mass.length / 2];
         int[] rightMass = new int[mass.length - mass.length / 2];
         System.arraycopy
