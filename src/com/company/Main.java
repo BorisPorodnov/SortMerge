@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         List<String> files = Arrays.stream(args).filter(it -> it.charAt(0) != '-')
             .collect(Collectors.toList());
@@ -30,7 +30,6 @@ public class Main {
         String flagInt = flags.get(1);
 
         switch (flagInt) {
-
             case "-i":
                 int[] text = readFile(inputFiles);
                 int[] resultText = sort(text);
@@ -50,6 +49,7 @@ public class Main {
         }
 
     }
+
     private static int[] readFile(List<String> inputFiles) {
 
         boolean numeric;
@@ -119,46 +119,45 @@ public class Main {
         if (mass.length < 2) {
             return mass;
         }
-        int[] leftMass = new int[mass.length / 2];
-        int[] rightMass = new int[mass.length - mass.length / 2];
+        int[] leftArray = new int[mass.length / 2];
+        int[] rightArray = new int[mass.length - mass.length / 2];
         System.arraycopy
-            (mass, 0, leftMass, 0, mass.length / 2);
+            (mass, 0, leftArray, 0, mass.length / 2);
         System.arraycopy
-            (mass, mass.length / 2, rightMass, 0, mass.length - (mass.length / 2));
+            (mass, mass.length / 2, rightArray, 0, mass.length - (mass.length / 2));
 
-        return sortMerge(sort(leftMass), sort(rightMass));
+        return sortMerge(sort(leftArray), sort(rightArray));
     }
 
-    private static int[] sortMerge(int[] leftMass, int[] rightMass) {
+    private static int[] sortMerge(int[] leftArray, int[] rightArray) {
 
-        int[] res = new int[leftMass.length + rightMass.length];
+        int[] res = new int[leftArray.length + rightArray.length];
 
-        int n = leftMass.length;
-        int m = rightMass.length;
+        int n = leftArray.length;
+        int m = rightArray.length;
 
         int i = 0, j = 0, k = 0;
 
         while (i < n && j < m) {
-            if (leftMass[i] <= rightMass[j]) {
-                res[k] = leftMass[i];
+            if (leftArray[i] <= rightArray[j]) {
+                res[k] = leftArray[i];
                 i++;
             } else {
-                res[k] = rightMass[j];
+                res[k] = rightArray[j];
                 j++;
             }
             k++;
         }
         while (i < n) {
-            res[k] = leftMass[i];
+            res[k] = leftArray[i];
             i++;
             k++;
         }
         while (j < m) {
-            res[k] = rightMass[j];
+            res[k] = rightArray[j];
             j++;
             k++;
         }
         return res;
     }
-
 }
