@@ -1,37 +1,26 @@
 package com.company;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+public class MergeSorting {
 
-public class Testing {
+    public int[] sort(int[] mass) {
 
-    public String[] readFile(List<String> inputFiles) throws IOException {
-
-        List<String> words = new ArrayList<>();
-        for (String inputFile : inputFiles) {
-            words.addAll(Files.readAllLines(Paths.get(inputFile)));
+        // проверяем не нулевой ли он?
+        if (mass == null) {
+            System.out.print("Массив пуст");
+            return null;
         }
-        return words.toArray(new String[0]);
-    }
-
-    public void write(String[] sortArray) throws FileNotFoundException {
-
-        PrintWriter out = new PrintWriter("outFile.txt");
-
-        StringBuilder builder = new StringBuilder();
-
-        for (int i = 0; i < sortArray.length; i++) {
-            builder.append(sortArray[i]);
-            builder.append("\n");
+        // проверяем не 1 ли элемент в массиве?
+        if (mass.length < 2) {
+            return mass;
         }
-        out.print(builder.toString());
-        out.close();
+        int[] leftArray = new int[mass.length / 2];
+        int[] rightArray = new int[mass.length - mass.length / 2];
+        System.arraycopy
+            (mass, 0, leftArray, 0, mass.length / 2);
+        System.arraycopy
+            (mass, mass.length / 2, rightArray, 0, mass.length - (mass.length / 2));
+
+        return merge(sort(leftArray), sort(rightArray));
     }
 
     public String[] sort(String[] array) {
@@ -53,6 +42,38 @@ public class Testing {
             (array, array.length / 2, rightArray, 0, array.length - (array.length / 2));
 
         return merge(sort(leftArray), sort(rightArray));
+    }
+
+    private int[] merge(int[] leftArray, int[] rightArray) {
+
+        int[] res = new int[leftArray.length + rightArray.length];
+
+        int n = leftArray.length;
+        int m = rightArray.length;
+
+        int i = 0, j = 0, k = 0;
+
+        while (i < n && j < m) {
+            if (leftArray[i] <= rightArray[j]) {
+                res[k] = leftArray[i];
+                i++;
+            } else {
+                res[k] = rightArray[j];
+                j++;
+            }
+            k++;
+        }
+        while (i < n) {
+            res[k] = leftArray[i];
+            i++;
+            k++;
+        }
+        while (j < m) {
+            res[k] = rightArray[j];
+            j++;
+            k++;
+        }
+        return res;
     }
 
     public String[] merge(String[] leftArray, String[] rightArray) {
@@ -86,4 +107,6 @@ public class Testing {
         }
         return res;
     }
+
+
 }
