@@ -12,7 +12,9 @@ import java.util.stream.Collectors;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
+        Main main = new Main();
 
         List<String> files = Arrays.stream(args).filter(it -> it.charAt(0) != '-')
             .collect(Collectors.toList());
@@ -27,30 +29,30 @@ public class Main {
         List<String> flags = Arrays.stream(args).filter(it -> it.charAt(0) == '-')
             .collect(Collectors.toList());
 
-        String flagInt = flags.get(1);
+        String flagInt = flags.get(0);
 
         switch (flagInt) {
             case "-i":
-                int[] text = readFile(inputFiles);
-                int[] resultText = sort(text);
+                int[] text = main.readFile(inputFiles);
+                int[] resultText = main.sort(text);
 
                 try {
                     assert resultText != null;
-                    write(resultText);
+                    main.write(resultText);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
                 break;
             case "-s":
-
-            default:
-                System.out.println(" this name was not found ");
+                Testing testing = new Testing();
+                String[] resText = testing.readFile(inputFiles);
+                String[] sorted = testing.sort(resText);
+                testing.write(sorted);
                 break;
         }
-
     }
 
-    private static int[] readFile(List<String> inputFiles) {
+    private int[] readFile(List<String> inputFiles) {
 
         boolean numeric;
         List<Integer> list = new ArrayList<>();
@@ -80,7 +82,7 @@ public class Main {
         return res;
     }
 
-    private static boolean tryParse(String element) {
+    private boolean tryParse(String element) {
 
         if (element == null || element.length() == 0) {
             return false;
@@ -94,7 +96,7 @@ public class Main {
         }
     }
 
-    private static void write(int[] sortMas) throws FileNotFoundException {
+    private void write(int[] sortMas) throws FileNotFoundException {
 
         PrintWriter out = new PrintWriter("outFile.txt");
 
@@ -108,7 +110,7 @@ public class Main {
         out.close();
     }
 
-    private static int[] sort(int[] mass) {
+    private int[] sort(int[] mass) {
 
         // проверяем не нулевой ли он?
         if (mass == null) {
@@ -126,10 +128,10 @@ public class Main {
         System.arraycopy
             (mass, mass.length / 2, rightArray, 0, mass.length - (mass.length / 2));
 
-        return sortMerge(sort(leftArray), sort(rightArray));
+        return merge(sort(leftArray), sort(rightArray));
     }
 
-    private static int[] sortMerge(int[] leftArray, int[] rightArray) {
+    private int[] merge(int[] leftArray, int[] rightArray) {
 
         int[] res = new int[leftArray.length + rightArray.length];
 
@@ -139,7 +141,7 @@ public class Main {
         int i = 0, j = 0, k = 0;
 
         while (i < n && j < m) {
-            if (leftArray[i] <= rightArray[j]) {
+            if (leftArray[i] <= rightArray[j]) { // if ( leftArray[i].compareTo(rightArray[j]) == -1 || leftArray[i].compareTo(rightArray[j]) == 0)
                 res[k] = leftArray[i];
                 i++;
             } else {
